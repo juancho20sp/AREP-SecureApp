@@ -94,6 +94,9 @@ Here is a [video] (https://github.com/juancho20sp/AREP-SecureApp/blob/master/VId
 - HelloServer app running on EC2:
 ![](img/helloServerAppEC2.png)
 
+- All EC2 instances (the ones used for this project are checked)
+- ![](img/allInstancesEC2.png)
+
 ### API
 
 ---
