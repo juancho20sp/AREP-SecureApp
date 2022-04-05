@@ -20,23 +20,43 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class SecureURLReader {
     public static String readURL(String targetURL) {
-        String result = null;
+//        String result = null;
+//        try {
+//            URL siteURL = new URL(targetURL);
+//            URLConnection urlConnection = siteURL.openConnection();
+//
+//            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+//
+//            String inputLine = null;
+//            while ((inputLine = reader.readLine()) != null) {
+//                result += inputLine;
+//            }
+//
+//            return result;
+//
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        }
+//        return null;
+
         try {
             URL siteURL = new URL(targetURL);
-            URLConnection urlConnection = siteURL.openConnection();
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-
-            String inputLine = null;
-            while ((inputLine = reader.readLine()) != null) {
-                result += inputLine;
+            StringBuilder response = new StringBuilder();
+            HttpURLConnection connection = (HttpURLConnection) siteURL.openConnection();
+            connection.setRequestMethod("GET");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
             }
-
-            return result;
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
+            reader.close();
+            return response.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         return null;
     }
 

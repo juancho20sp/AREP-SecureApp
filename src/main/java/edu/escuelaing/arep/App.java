@@ -2,8 +2,10 @@ package edu.escuelaing.arep;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import edu.escuelaing.arep.model.User;
+import edu.escuelaing.arep.utils.PasswordManager;
 import edu.escuelaing.arep.utils.SecureURLReader;
 import spark.Request;
+import spark.Response;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,7 +14,7 @@ import static spark.Spark.*;
 
 public class App {
 
-    private static HashMap<String, Integer> users = new HashMap<String, Integer>();
+    private static HashMap<String, String> users = new HashMap<String, String>();
 
     public static void main( String[] args ) {
         // Get default port
@@ -46,6 +48,13 @@ public class App {
                     return "OK";
                 });
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
+        before("/security/*",(req, res) -> isUserLoggedIn(req));
+
+        get("/", (req, res) -> {
+            res.redirect("/login.html");
+            res.status(200);
+            return null;
+        });
 
         post("/login", (req, res) -> {
             res.type("application/json");
@@ -62,34 +71,30 @@ public class App {
             return createJson(200, "Login successful!", getSession(req));
         });
 
+        get("/security/helloService", (req, res) -> onHelloService(res));
+
     }
+
+
 
     private static ArrayList<String> login(Request req){
         User user = (new Gson()).fromJson(req.body(), User.class);
 
         ArrayList<String> responses = new ArrayList<String>();
-//        System.out.println(user.getName());
-//        System.out.println(user.getPassword());
-        if(users.containsKey(user.getName())){
-//            System.out.println(users.get(user.getName()).equals(generateCode(user.getPassword())));
-            if(users.get(user.getName()).equals(generateCode(user.getPassword()))){
+        if(users.containsKey(user.getUsername())){
+            if(users.get(user.getUsername()).equals(PasswordManager.hashPassword(user.getPassword()))){
                 req.session(true);
-                req.session().attribute("login", true);
-//                System.out.println("Login successful! ");
-                responses.add("Login successful!");
-//                responses.add(SecureURLReader.readURL("https://localhost:2703/hello"));
+                req.session().attribute("isLoggedIn", true);
+                responses.add("Login successful!");;
                 responses.add(getSession(req));
                 return responses;
             }
-//            System.out.println("Wrong user or password");
+
             responses.add("Wrong password");
-//            responses.add("Not Logged");
             responses.add(getSession(req));
             return responses;
         }
-//        System.out.println("User doesn't exists");
         responses.add("User doesn't exists");
-//        responses.add("Not Logged");
         responses.add(getSession(req));
         return responses;
     }
@@ -111,8 +116,77 @@ public class App {
 
     }
 
+    // ------------------
+    /**
+     * Redirect to login page when the user is not logged in.
+     * @param req
+     * @param res
+     * @return The status of the user trying to connect to the page
+     */
+    private static String goToLoginPage(Request req, Response res){
+        String statusMessage = "error";
+        int statusCode = 404;
+
+        req.session(true);
+
+        // Get the user info
+        User user = (new Gson()).fromJson(req.body(), User.class);
+
+        // Validate that the username and password are in the request and are valid
+        String username = user.getUsername();
+        String password = user.getPassword();
+
+        boolean isUsernamePresent = users.containsKey(username);
+        boolean isPasswordCorrect = users.get(username).equals(PasswordManager.hashPassword(password));
+
+        if (isUsernamePresent && isPasswordCorrect){
+            req.session().attribute("username", username);
+            req.session().attribute("isLoggedIn", true);
+
+            statusCode = 200;
+            statusMessage = "Login successful";
+        }
+
+        res.status(statusCode);
+        return statusMessage;
+    }
 
 
+    /**
+     * Verifies if the user is logged in
+     */
+    private static void isUserLoggedIn(Request req) {
+        // $
+        System.out.println("is User Logged in");
+
+        req.session(true);
+
+        if (req.session().isNew()) {
+            req.session().attribute("isLoggedIn", false);
+        }
+
+        if ((boolean) req.session().attribute("isLoggedIn")){
+            return;
+        }
+
+        halt(401, "<h1>No está autorizado para estar aquí</h1>");
+    }
+
+    /**
+     * Go to hello service!
+     */
+    private static String onHelloService(Response res){
+        try {
+            return "<h1>" + SecureURLReader.readURL("https://localhost:2703/hello") + "</h1>";
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+        res.status(500);
+        return "<h1>Internal server error</h1>";
+    }
+
+    // ------------------
 
 
 
@@ -123,9 +197,9 @@ public class App {
     }
 
     private static  void generateUsers(){
-        users.put("juan", generateCode("password"));
-        users.put("david", generateCode("password"));
-        users.put("test", generateCode("password"));
+        users.put("juan", PasswordManager.hashPassword("password"));
+        users.put("david", PasswordManager.hashPassword("password"));
+        users.put("test", PasswordManager.hashPassword("password"));
     }
 
     private static JsonObject createJson(int status, String result, String serverResponse){
