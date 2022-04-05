@@ -17,6 +17,7 @@ public class App {
     private static HashMap<String, String> users = new HashMap<String, String>();
 
     public static void main( String[] args ) {
+
         // Get default port
         port(getPort());
 
