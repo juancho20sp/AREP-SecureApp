@@ -95,39 +95,27 @@ Here is a video of the application running on AWS.
 **Base URL (local)**
 
 ```url
-http://localhost:8087
+https://localhost:4567
 ```
 **Base URL (AWS)**
 
 ```url
-http://ec2-3-91-195-184.compute-1.amazonaws.com/
-```
-
-### ENDPOINTS
-
----
-
-For getting all the messages, make a **GET** request to this endpoint:
-
-```url
-/api/v1/messages
-```
-
-For sending a new message, make a **POST** request to this endpoint:
-
-```url
-/api/v1/messages
+https://ec2-3-89-98-147.compute-1.amazonaws.com:4567
 ```
 
 ### REQUESTS
 
 ---
+To log in an user to the application you must send a **POST** request to this endpoint:
+```url
+https://ec2-3-89-98-147.compute-1.amazonaws.com:4567/login
+```
 
-To send a new message to the application using an HTTP Client such as _postman_ you must send the body of the **POST** request in a format like this:
-
+The body of the POST request must be like this:
 ```json
 {
-  "text": "Your message here"
+  "username": "juan",
+  "password": "password"
 }
 ```
 
