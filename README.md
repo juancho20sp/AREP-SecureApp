@@ -85,9 +85,14 @@ Here is a [video] (https://github.com/juancho20sp/AREP-SecureApp/blob/master/VId
 - Login page (when the user tries to enter the root page "/"):
 ![](img/login1.png)
 
-- Successful message page (when the user is logged in)
+- Successful message page (when the user is logged in):
 ![](img/login2.png)
 
+- Main app running on EC2:
+![](img/mainAppEC2.png)
+
+- HelloServer app running on EC2:
+![](img/helloServerAppEC2.png)
 
 ### API
 
@@ -97,11 +102,16 @@ Here is a [video] (https://github.com/juancho20sp/AREP-SecureApp/blob/master/VId
 
 ```url
 https://localhost:4567
+https://localhost:2703
 ```
 **Base URL (AWS)**
 
 ```url
 https://ec2-3-89-98-147.compute-1.amazonaws.com:4567
+```
+**Backend URL (AWS)**
+```url
+https://ec2-3-80-114-17.compute-1.amazonaws.com:2703/hello
 ```
 
 ### REQUESTS
