@@ -6,8 +6,10 @@ public class HelloServer {
 
 
     public static void main(String args []){
-        secure("keystores/ecikeystore.p12", "password", null, null);
         port(getPort());
+
+        secure(getKeyStore(), "password", null, null);
+
         get("/hello", (req, res) -> "Hello From My New Server");
     }
 
@@ -17,5 +19,12 @@ public class HelloServer {
             return Integer.parseInt(System.getenv("PORT"));
         }
         return 2703; //returns default port if heroku-port isn't set (i.e. on localhost)
+    }
+
+    static String getKeyStore() {
+        if (System.getenv("KEYSTORE") != null) {
+            return System.getenv("KEYSTORE");
+        }
+        return "keystores/ecikeystore.p12"; //returns default keystore if keystore isn't set (i.e. on localhost)
     }
 }
