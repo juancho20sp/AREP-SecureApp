@@ -77,8 +77,14 @@ Here is a video of the application running on AWS.
 
 
 ### Evidence
-- Project Working:
-![](img/MessagesWorking.png)
+- Project Working (restricting access to unidentified user):
+![](img/login0.png)
+
+- Login page (when the user tries to enter the root page "/"):
+![](img/login1.png)
+
+- Successful message page (when the user is logged in)
+![](img/login2.png)
 
 
 
