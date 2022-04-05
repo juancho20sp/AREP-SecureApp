@@ -30,7 +30,9 @@ public class App {
         staticFileLocation("/public");
 
         //API: secure(keystoreFilePath, keystorePassword, truststoreFilePath, truststorePassword);
-        secure("keystores/ecikeystore.p12", "password", null, null);
+//        secure("keystores/ecikeystore.p12", "password", null, null);
+        secure(getKeyStore(), "password", null, null);
+
 
         get("/hello", (req, res) -> "Hello World");
 
@@ -47,6 +49,7 @@ public class App {
                     }
                     return "OK";
                 });
+
         before((request, response) -> response.header("Access-Control-Allow-Origin", "*"));
         before("/security/*",(req, res) -> isUserLoggedIn(req));
 
@@ -65,10 +68,9 @@ public class App {
             return createJson(400, "Bad request" ,"Not logged");
         });
 
-
         get("/login/service", (req, res) -> {
             System.out.println("SERVICIO");
-            return createJson(200, "Login successful!", getSession(req));
+            return createJson(200, "Login successful!", getHelloServiceResponse(req));
         });
 
         get("/security/helloService", (req, res) -> onHelloService(res));
@@ -80,31 +82,38 @@ public class App {
     private static ArrayList<String> login(Request req){
         User user = (new Gson()).fromJson(req.body(), User.class);
 
+        // Validate that the username and password are in the request and are valid
+        String username = user.getUsername();
+        String password = user.getPassword();
+
+        boolean isUsernamePresent = users.containsKey(username);
+        boolean isPasswordCorrect = users.get(username).equals(PasswordManager.hashPassword(password));
+
         ArrayList<String> responses = new ArrayList<String>();
-        if(users.containsKey(user.getUsername())){
-            if(users.get(user.getUsername()).equals(PasswordManager.hashPassword(user.getPassword()))){
+
+        if(isUsernamePresent){
+            if(isPasswordCorrect){
                 req.session(true);
                 req.session().attribute("isLoggedIn", true);
                 responses.add("Login successful!");;
-                responses.add(getSession(req));
+                responses.add(getHelloServiceResponse(req));
                 return responses;
             }
 
             responses.add("Wrong password");
-            responses.add(getSession(req));
+            responses.add(getHelloServiceResponse(req));
             return responses;
         }
-        responses.add("User doesn't exists");
-        responses.add(getSession(req));
+
+        responses.add("User doesn't exist");
+        responses.add(getHelloServiceResponse(req));
         return responses;
     }
 
-    private static String getSession(Request req){
+    private static String getHelloServiceResponse(Request req){
         req.session();
         try{
-            if((boolean)req.session().attribute("login")){
-//                System.out.println("getSession");
-                System.out.println("getSession: " + SecureURLReader.readURL("https://localhost:2703/hello"));
+            if((boolean)req.session().attribute("login")){;
                 return SecureURLReader.readURL("https://localhost:2703/hello");
             }
         }catch(Exception e){
@@ -155,7 +164,7 @@ public class App {
     /**
      * Verifies if the user is logged in
      */
-    private static void isUserLoggedIn(Request req) {
+    private static boolean isUserLoggedIn(Request req) {
         // $
         System.out.println("is User Logged in");
 
@@ -166,10 +175,11 @@ public class App {
         }
 
         if ((boolean) req.session().attribute("isLoggedIn")){
-            return;
+            return true;
         }
 
         halt(401, "<h1>No está autorizado para estar aquí</h1>");
+        return false;
     }
 
     /**
@@ -186,32 +196,30 @@ public class App {
         return "<h1>Internal server error</h1>";
     }
 
-    // ------------------
-
-
-
-    //Methods
-
-    private static Integer generateCode(String password){
-        return password.hashCode();
-    }
-
+    /**
+     * Method used for generating the dummy database
+     */
     private static  void generateUsers(){
         users.put("juan", PasswordManager.hashPassword("password"));
         users.put("david", PasswordManager.hashPassword("password"));
         users.put("test", PasswordManager.hashPassword("password"));
     }
 
+    /**
+     * Method for unifying the JSON responses
+     * @param status
+     * @param result
+     * @param serverResponse
+     * @return
+     */
     private static JsonObject createJson(int status, String result, String serverResponse){
         JsonObject json  =new JsonObject();
         json.addProperty("status", status);
         json.addProperty("result", result);
-        json.addProperty("server", serverResponse);
+        json.addProperty("serverResponse", serverResponse);
 
         return json;
-
     }
-
 
     /**
      * This method reads the default port as specified by the PORT variable in

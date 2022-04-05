@@ -8,8 +8,6 @@ const loginButton = document.querySelector('#loginBtn');
 
 const onLogin = async (event) => {
     event.preventDefault();
-    // $
-    debugger;
 
     const username = usernameInput.value;
     const password = passwordInput.value;
@@ -29,9 +27,6 @@ const onLogin = async (event) => {
         });
 
         const response = await data.json();
-
-        // $
-        debugger;
 
         if (response.status === 200) {
             console.log("Everything is working");
