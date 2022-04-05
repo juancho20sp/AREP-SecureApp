@@ -75,7 +75,7 @@ java -cp "target/classes:target/dependency/*" edu.escuelaing.arep.App
 
 ## App running
 ---
-Here is a video of the application running on AWS.
+Here is a [video] (https://github.com/juancho20sp/AREP-SecureApp/blob/master/VIdeo.mp4) of the application running on AWS.
 
 
 ### Evidence
@@ -87,7 +87,6 @@ Here is a video of the application running on AWS.
 
 - Successful message page (when the user is logged in)
 ![](img/login2.png)
-
 
 
 ### API
