@@ -114,7 +114,9 @@ public class App {
         req.session();
         try{
             if((boolean)req.session().attribute("login")){;
-                return SecureURLReader.readURL("https://localhost:2703/hello");
+//                return SecureURLReader.readURL("https://localhost:2703/hello");
+                return SecureURLReader.readURL("https://ec2-3-80-114-17.compute-1.amazonaws.com:2703/hello");
+
             }
         }catch(Exception e){
             System.out.println(e);
@@ -186,7 +188,9 @@ public class App {
      */
     private static String onHelloService(Response res){
         try {
-            return "<h1>" + SecureURLReader.readURL("https://localhost:2703/hello") + "</h1>";
+//            return "<h1>" + SecureURLReader.readURL("https://localhost:2703/hello") + "</h1>";
+            return "<h1>" + SecureURLReader.readURL("https://ec2-3-80-114-17.compute-1.amazonaws.com:2703/hello") + "</h1>";
+
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -241,7 +245,12 @@ public class App {
 }
 
 
-
+//i-0c63a2cc
+//        i-00412
+//
+//        java -cp "target/classes:target/dependency/*" "edu.escuelaing.arep.App"
+//
+//        sudo amazon-linux-extras install java-openjdk11
 
 
 
