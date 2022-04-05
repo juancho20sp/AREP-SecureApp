@@ -20,25 +20,6 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class SecureURLReader {
     public static String readURL(String targetURL) {
-//        String result = null;
-//        try {
-//            URL siteURL = new URL(targetURL);
-//            URLConnection urlConnection = siteURL.openConnection();
-//
-//            BufferedReader reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-//
-//            String inputLine = null;
-//            while ((inputLine = reader.readLine()) != null) {
-//                result += inputLine;
-//            }
-//
-//            return result;
-//
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        }
-//        return null;
-
         try {
             URL siteURL = new URL(targetURL);
             StringBuilder response = new StringBuilder();
@@ -86,7 +67,8 @@ public class SecureURLReader {
             SSLContext.setDefault(sslContext);
 
             // We can now read this URL
-            readURL("https://localhost:2703/hello");
+//            readURL("https://localhost:2703/hello");
+            readURL("https://ec2-3-80-114-17.compute-1.amazonaws.com:2703/hello");
 
             // This one can't be read because the Java default truststore has been
             // changed.
