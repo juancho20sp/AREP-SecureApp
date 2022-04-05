@@ -15,6 +15,8 @@ keytool -genkeypair -alias ecikeypair -keyalg RSA -keysize 2048 -storetype PKCS1
 ```
 3. Add a password and fill the gaps as follows:
 ![](img/generateKey.png)
+<br />
+
 4. Save the certificate:
 ```bash
 keytool -export -keystore ./ecikeystore.p12 -alias ecikeypair -file ecicert.cer
@@ -77,8 +79,14 @@ Here is a video of the application running on AWS.
 
 
 ### Evidence
-- Project Working:
-![](img/MessagesWorking.png)
+- Project Working (restricting access to unidentified user):
+![](img/login0.png)
+
+- Login page (when the user tries to enter the root page "/"):
+![](img/login1.png)
+
+- Successful message page (when the user is logged in)
+![](img/login2.png)
 
 
 
@@ -89,39 +97,27 @@ Here is a video of the application running on AWS.
 **Base URL (local)**
 
 ```url
-http://localhost:8087
+https://localhost:4567
 ```
 **Base URL (AWS)**
 
 ```url
-http://ec2-3-91-195-184.compute-1.amazonaws.com/
-```
-
-### ENDPOINTS
-
----
-
-For getting all the messages, make a **GET** request to this endpoint:
-
-```url
-/api/v1/messages
-```
-
-For sending a new message, make a **POST** request to this endpoint:
-
-```url
-/api/v1/messages
+https://ec2-3-89-98-147.compute-1.amazonaws.com:4567
 ```
 
 ### REQUESTS
 
 ---
+To log in an user to the application you must send a **POST** request to this endpoint:
+```url
+https://ec2-3-89-98-147.compute-1.amazonaws.com:4567/login
+```
 
-To send a new message to the application using an HTTP Client such as _postman_ you must send the body of the **POST** request in a format like this:
-
+The body of the POST request must be like this:
 ```json
 {
-  "text": "Your message here"
+  "username": "juan",
+  "password": "password"
 }
 ```
 
