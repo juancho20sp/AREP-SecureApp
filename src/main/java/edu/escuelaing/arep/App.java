@@ -61,6 +61,7 @@ public class App {
 
         post("/login", (req, res) -> {
             res.type("application/json");
+
             if (req.body() != null) {
                 ArrayList<String> responses = login(req);
                 return createJson(200, responses.get(0), responses.get(1));
@@ -68,16 +69,14 @@ public class App {
             return createJson(400, "Bad request" ,"Not logged");
         });
 
-        get("/login/service", (req, res) -> {
-            System.out.println("SERVICIO");
-            return createJson(200, "Login successful!", getHelloServiceResponse(req));
-        });
+//        get("/login/service", (req, res) -> {
+//            System.out.println("SERVICIO");
+//            return createJson(200, "Login successful!", getHelloServiceResponse(req));
+//        });
 
         get("/security/helloService", (req, res) -> onHelloService(res));
 
     }
-
-
 
     private static ArrayList<String> login(Request req){
         User user = (new Gson()).fromJson(req.body(), User.class);
@@ -125,40 +124,39 @@ public class App {
 
     }
 
-    // ------------------
     /**
      * Redirect to login page when the user is not logged in.
      * @param req
      * @param res
      * @return The status of the user trying to connect to the page
      */
-    private static String goToLoginPage(Request req, Response res){
-        String statusMessage = "error";
-        int statusCode = 404;
-
-        req.session(true);
-
-        // Get the user info
-        User user = (new Gson()).fromJson(req.body(), User.class);
-
-        // Validate that the username and password are in the request and are valid
-        String username = user.getUsername();
-        String password = user.getPassword();
-
-        boolean isUsernamePresent = users.containsKey(username);
-        boolean isPasswordCorrect = users.get(username).equals(PasswordManager.hashPassword(password));
-
-        if (isUsernamePresent && isPasswordCorrect){
-            req.session().attribute("username", username);
-            req.session().attribute("isLoggedIn", true);
-
-            statusCode = 200;
-            statusMessage = "Login successful";
-        }
-
-        res.status(statusCode);
-        return statusMessage;
-    }
+//    private static String goToLoginPage(Request req, Response res){
+//        String statusMessage = "error";
+//        int statusCode = 404;
+//
+//        req.session(true);
+//
+//        // Get the user info
+//        User user = (new Gson()).fromJson(req.body(), User.class);
+//
+//        // Validate that the username and password are in the request and are valid
+//        String username = user.getUsername();
+//        String password = user.getPassword();
+//
+//        boolean isUsernamePresent = users.containsKey(username);
+//        boolean isPasswordCorrect = users.get(username).equals(PasswordManager.hashPassword(password));
+//
+//        if (isUsernamePresent && isPasswordCorrect){
+//            req.session().attribute("username", username);
+//            req.session().attribute("isLoggedIn", true);
+//
+//            statusCode = 200;
+//            statusMessage = "Login successful";
+//        }
+//
+//        res.status(statusCode);
+//        return statusMessage;
+//    }
 
 
     /**
