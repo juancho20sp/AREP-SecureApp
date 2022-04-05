@@ -1,0 +1,5 @@
+edu\escuelaing\arep\App.class
+edu\escuelaing\arep\utils\SecureURLReader.class
+edu\escuelaing\arep\HelloServer.class
+edu\escuelaing\arep\model\User.class
+edu\escuelaing\arep\utils\PasswordManager.class
