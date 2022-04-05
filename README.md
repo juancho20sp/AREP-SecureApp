@@ -15,6 +15,8 @@ keytool -genkeypair -alias ecikeypair -keyalg RSA -keysize 2048 -storetype PKCS1
 ```
 3. Add a password and fill the gaps as follows:
 ![](img/generateKey.png)
+<br />
+
 4. Save the certificate:
 ```bash
 keytool -export -keystore ./ecikeystore.p12 -alias ecikeypair -file ecicert.cer
